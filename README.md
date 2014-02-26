@@ -16,20 +16,20 @@ https://discovery.etcd.io/91ddc8a36d3e101c22a88e67c92b6f91
 /whalesong/
   rooms/
     room1/
-      name
-      caption
+      name='A room name'
+      caption='This room is really cool'
       messages/
-        1
-        2
-        3
+        1='hi'
+        2='dood!'
+        3='huh?'
         ...
     room2/
-      name
-      caption
+      name='Another nice room'
+      caption='This room is way better'
       messages/
-        1
-        2
-        3
+        1='hmmm'
+        2='I like docker'
+        3='I like etcd!'
 ```
 
 ## Etcd Container startup
