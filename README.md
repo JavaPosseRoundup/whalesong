@@ -16,16 +16,20 @@ https://discovery.etcd.io/91ddc8a36d3e101c22a88e67c92b6f91
 /whalesong/
   rooms/
     room1/
+      name
       caption
-      1
-      2
-      3
-      ...
+      messages/
+        1
+        2
+        3
+        ...
     room2/
+      name
       caption
-      1
-      2
-      3
+      messages/
+        1
+        2
+        3
 ```
 
 ## Etcd Container startup
