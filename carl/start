@@ -10,4 +10,4 @@ export LOCAL_PPORT=700${ID}
 
 echo Starting $NODE on $LOCAL_PORT:$LOCAL_PPORT
 
-docker run -d --name $NODE -p $LOCAL_PPORT:$LOCAL_PPORT -p $LOCAL_PORT:$LOCAL_PORT coreos/etcd -peer-addr $LOCAL_IP:$LOCAL_PPORT -addr $LOCAL_IP:$LOCAL_PORT -name $NODE -discovery https://discovery.etcd.io/${TOKEN}
+docker run -d --name $NODE -p $LOCAL_PPORT:$LOCAL_PPORT -p $LOCAL_PORT:$LOCAL_PORT coreos/etcd -peer-addr $LOCAL_IP:$LOCAL_PPORT -addr $LOCAL_IP:$LOCAL_PORT -name $NODE -cors * -discovery https://discovery.etcd.io/${TOKEN}
