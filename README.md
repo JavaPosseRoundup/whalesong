@@ -10,13 +10,13 @@ Theme song: [http://upload.wikimedia.org/wikipedia/commons/1/13/Humpbackwhale2.o
 /whalesong/
   rooms/
     room1/
-      title
+      caption
       1
       2
       3
       ...
     room2/
-      title
+      caption
       1
       2
       3
