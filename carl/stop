@@ -1,0 +1,13 @@
+export ID=$1
+if [[ -z $ID ]]; then exit 1; fi
+
+export LOCAL_IP=$(/sbin/ifconfig en0 | sed '/inet\ /!d;s/.*inet //g;s/\ .*//g')
+
+export NODE=node-$LOCAL_IP-$ID
+export LOCAL_PORT=400${ID}
+export LOCAL_PPORT=700${ID}
+
+echo Stopping $NODE on $LOCAL_PORT:$LOCAL_PPORT
+
+docker stop $NODE
+docker rm $NODE
