@@ -6,7 +6,9 @@ Theme song: [http://upload.wikimedia.org/wikipedia/commons/1/13/Humpbackwhale2.o
 
 ## Discovery Token
 
-```https://discovery.etcd.io/9a50a9b1bce27a04bd4590e74087929b```
+```
+https://discovery.etcd.io/9a50a9b1bce27a04bd4590e74087929b
+```
 
 ## Etcd Structure
 
