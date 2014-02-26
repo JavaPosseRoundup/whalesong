@@ -1,0 +1,7 @@
+#!/bin/bash
+
+CID=$(docker ps | grep etcd | cut -d ' ' -f 1)
+echo Stopping $CID
+
+docker stop $CID
+
