@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -z "$ETCD" ]; then
+  docker run -p 6667:6667 -t -i $(docker build . | tail -n 2 | cut -b26-)
+else
+  docker run -p 6667:6667 --env ETCD="$ETCD" -t -i $(docker build . | tail -n 2 | cut -b26-)
+fi
+
