@@ -75,14 +75,24 @@
 (defn create-room
   "Create a new room on the chat server"
   [url room-name caption]
-  (let [room-url (add-to-url url (format "/rooms/%s/caption" room-name))]
-    (put-url room-url {:value (str caption)})))
+  (let [name-url (add-to-url url (format "/rooms/%s/name" room-name))
+        caption-url (add-to-url url (format "/rooms/%s/caption" room-name))]
+    (put-url name-url {:value (str room-name)})
+    (put-url caption-url {:value (str caption)})))
 
 (defn delete-room
   "Permanently delete an entire chat room"
   [url room-name]
-  (let [room-url (add-to-url url (format "/rooms/%s?dir=true" room-name))]
-    (delete-url room-url)))
+  (let [room-url (add-to-url url (format "/rooms/%s" room-name))
+        room (get-room url room-name)
+        body (:body room)
+        body-json (parse-string body)
+        node (get body-json "node")
+        name (get node "key")
+        children (get node "nodes")]
+    (doseq [child children]
+      (delete-url (add-to-url room-url (format "/%s" (get-last-piece-of-key child)))))
+    (delete-url (add-to-url room-url "?dir=true"))))
 
 (defn post-message
   "Send a message to the chat room"
@@ -108,10 +118,13 @@
         messages (for [m sorted-children] (get m "value"))]
     messages))
 
-(defn- get-numeric-message-id [node]
+(defn- get-last-piece-of-key [node]
   (let [key (get node "key")
         chunks (string/split key #"/")]
-    (Integer/valueOf (last chunks))))
+    (last chunks)))
+
+(defn- get-numeric-message-id [node]
+  (Integer/valueOf (get-last-piece-of-key node)))
 
 (defn- show-output [resp]
   (println (:body resp)))
@@ -128,8 +141,8 @@
 (post-message joey "Test1" "First Post!")
 (post-message joey "Test1" "Second Post!")
 (show-messages (get-messages-for-room joey "Test1"))
-;; (delete-room joey "YYY9")
 
+(create-room joey "Test3" "Foo bar bar")
 
-
+(delete-room joey "Test1")
 
