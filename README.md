@@ -6,8 +6,9 @@ Theme song: [http://upload.wikimedia.org/wikipedia/commons/1/13/Humpbackwhale2.o
 
 ## Discovery Token
 
+This discovery token can be passed to etcd to tell it to associate with our cluster.
 ```
-https://discovery.etcd.io/0f663fdc18e742808d4b03c909e9a71a
+-discovery https://discovery.etcd.io/91ddc8a36d3e101c22a88e67c92b6f91
 ```
 
 ## Etcd Structure
@@ -16,31 +17,42 @@ https://discovery.etcd.io/0f663fdc18e742808d4b03c909e9a71a
 /whalesong/
   rooms/
     room1/
-      caption
-      1
-      2
-      3
-      ...
+      name='A room name'
+      caption='This room is really cool'
+      messages/
+        1='hi'
+        2='dood!'
+        3='huh?'
+        ...
     room2/
-      caption
-      1
-      2
-      3
+      name='Another nice room'
+      caption='This room is way better'
+      messages/
+        1='hmmm'
+        2='I like docker'
+        3='I like etcd!'
+
 ```
 
-## Etcd Container startup
+## Etcd Startup
 
-First export the name, ports and IP addresses involved:
-```
-export NODE=node4
-export LOCAL_IP=192.168.0.32
-export LOCAL_PORT=4001
-export LOCAL_PPORT=7001
-export REMOTE_IP=192.168.0.32
-export REMOTE_PPORT=7001
-```
+See carl/start for a sample shell script for starting an etcd docker container that joins our cluster.
 
-Then run the docker container with all the ports and names wired up:
-```
-docker run -d -p $LOCAL_PPORT:$LOCAL_PPORT -p $LOCAL_PORT:$LOCAL_PORT coreos/etcd -peer-addr $LOCAL_IP:$LOCAL_PPORT -addr $LOCAL_IP:$LOCAL_PORT -name $NODE -peers $REMOTE_IP:$REMOTE_PPORT
-```
+## Etcd initial load (use this to create some rooms and messages for testing)
+
+curl -L -X PUT http://192.168.0.14:4002/v2/keys/whalesong/rooms/room1/name -d value="Java%20Posse%20House"
+
+curl -L -X PUT http://192.168.0.14:4002/v2/keys/whalesong/rooms/room1/caption -d value="Where%20the%20elite%20meet"
+
+curl -L -X POST http://192.168.0.14:4002/v2/keys/whalesong/rooms/room1/messages -d value="Carl%20says%20hi"
+
+curl -L -X POST http://192.168.0.14:4002/v2/keys/whalesong/rooms/room1/messages -d value="Rob%20says%20hi%20back"
+
+curl -L -X PUT http://192.168.0.14:4002/v2/keys/whalesong/rooms/room2/name -d value="Crested%20Butte%20Food"
+
+curl -L -X PUT http://192.168.0.14:4002/v2/keys/whalesong/rooms/room2/caption -d value="Talk%20About%20CB%20Food"
+
+curl -L -X POST http://192.168.0.14:4002/v2/keys/whalesong/rooms/room2/messages -d value="Teocali%20is%20yummy"
+
+curl -L -X POST http://192.168.0.14:4002/v2/keys/whalesong/rooms/room2/messages -d value="Fig%20pizza%20is%20best"
+
