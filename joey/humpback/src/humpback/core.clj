@@ -15,7 +15,6 @@
 (defn- get-url
   "Fetches the specified URL from the server"
   [url]
-  (println url)
   (client/get url {:throw-entire-message? true
                    :accept :json}))
 
@@ -27,14 +26,13 @@
                       :force-redirects true
                       :throw-entire-message? true
                       :accept :json}]
-    (println url)
-    (println full-payload)
     (client/put url full-payload)))
 
 (defn- delete-url
   "Executes a DELETE against the given URL"
   [url]
   (client/delete url {:throw-entire-message? true
+                      :force-redirects true
                       :accept :json}))
 
 (defn- add-to-url
@@ -74,8 +72,8 @@
 (defn delete-room
   "Permanently delete an entire chat room"
   [url room-name]
-  (let [room-url (add-to-url url (format "/rooms/%s" room-name))]
-    (delete-url url)))
+  (let [room-url (add-to-url url (format "/rooms/%s?dir=true" room-name))]
+    (delete-url room-url)))
 
 (defn- show-output [resp]
   (println (:body resp)))
@@ -96,7 +94,7 @@
 (create-room joey "YYY9" "Testing")
 (show-room-info (get-room joey "YYY9"))
 
-(delete-room joey "YYY7")
+(delete-room joey "YYY9")
 
 
 
