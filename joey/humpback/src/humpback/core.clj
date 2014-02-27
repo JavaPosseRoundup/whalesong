@@ -1,10 +1,10 @@
 (ns humpback.core
   (:require [clj-http.client :as client]
             [cheshire.core :refer :all]
-            [clojure.pprint :as pprint]))
+            [clojure.string :as string]))
 
-(def carl-ip "192.168.0.14")
-(def joey-ip "192.168.0.27")
+;; (def carl-ip "192.168.0.14")
+(def joey-ip "192.168.0.22")
 (def etcd-port "4001")
 
 (defn- construct-url
@@ -34,6 +34,15 @@
   (client/delete url {:throw-entire-message? true
                       :force-redirects true
                       :accept :json}))
+
+(defn- post-url
+  "Executes a POST against the given URL"
+  [url payload]
+  (let [full-payload {:form-params payload
+                      :throw-entire-message? true
+                      :force-redirects true
+                      :accept :json}]
+    (client/post url full-payload)))
 
 (defn- add-to-url
   "Appends the given string to the url"
@@ -75,26 +84,51 @@
   (let [room-url (add-to-url url (format "/rooms/%s?dir=true" room-name))]
     (delete-url room-url)))
 
+(defn post-message
+  "Send a message to the chat room"
+  [url room-name message]
+  (let [room-url (add-to-url url (format "/rooms/%s/messages" room-name))]
+    (post-url room-url {:value (str message)})))
+
+(defn get-messages-for-room
+  "Get all messages from the chat room"
+  [url room-name]
+  (let [room-url (add-to-url url (format "/rooms/%s/messages" room-name))]
+    (get-url room-url)))
+
+(defn show-messages
+  "Display relevant information about a room."
+  [room]
+  (let [body (:body room)
+        body-json (parse-string body)
+        node (get body-json "node")
+        name (get node "key")
+        children (get node "nodes")
+        sorted-children (sort-by get-numeric-message-id children)
+        messages (for [m sorted-children] (get m "value"))]
+    messages))
+
+(defn- get-numeric-message-id [node]
+  (let [key (get node "key")
+        chunks (string/split key #"/")]
+    (Integer/valueOf (last chunks))))
+
 (defn- show-output [resp]
   (println (:body resp)))
 
 (def joey (construct-url joey-ip etcd-port))
-(def carl (construct-url carl-ip etcd-port))
+;; (def carl (construct-url carl-ip etcd-port))
 
 (get-room-list joey)
 (get-room joey "room1")
 
-(create-room joey "Boo-Yah" "This is a test room")
-(show-output (get-room joey "Boo-Yah"))
-(show-output (get-room joey "XXX"))
-
-(def xxx (get-room joey "XXX"))
-(show-room-info (get-room joey "XXX"))
-
-(create-room joey "YYY9" "Testing")
-(show-room-info (get-room joey "YYY9"))
-
-(delete-room joey "YYY9")
+;;
+(create-room joey "Test1" "Testing")
+(show-room-info (get-room joey "Test1"))
+(post-message joey "Test1" "First Post!")
+(post-message joey "Test1" "Second Post!")
+(show-messages (get-messages-for-room joey "Test1"))
+;; (delete-room joey "YYY9")
 
 
 
