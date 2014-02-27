@@ -8,7 +8,7 @@ Theme song: [http://upload.wikimedia.org/wikipedia/commons/1/13/Humpbackwhale2.o
 
 This discovery token can be passed to etcd to tell it to associate with our cluster.
 ```
--discovery https://discovery.etcd.io/3aa527c103c9233520be5bf7a45826b0
+-discovery https://discovery.etcd.io/66ea6c39d90bfab819bede8661041181
 ```
 
 ## Etcd Structure
