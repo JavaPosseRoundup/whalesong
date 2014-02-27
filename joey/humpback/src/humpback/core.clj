@@ -3,11 +3,15 @@
             [cheshire.core :refer :all]
             [clojure.string :as string]))
 
-;; (def carl-ip "192.168.0.14")
-(def joey-ip "192.168.0.22")
-(def etcd-port "4001")
+(defn- get-last-piece-of-key [node]
+  (let [key (get node "key")
+        chunks (string/split key #"/")]
+    (last chunks)))
 
-(defn- construct-url
+(defn- get-numeric-message-id [node]
+  (Integer/valueOf (get-last-piece-of-key node)))
+
+(defn construct-url
   "Builds a URL string from the specified parts"
   [ip port]
   (format "http://%s:%s/v2/keys/whalesong" ip port))
@@ -118,31 +122,35 @@
         messages (for [m sorted-children] (get m "value"))]
     messages))
 
-(defn- get-last-piece-of-key [node]
-  (let [key (get node "key")
-        chunks (string/split key #"/")]
-    (last chunks)))
-
-(defn- get-numeric-message-id [node]
-  (Integer/valueOf (get-last-piece-of-key node)))
+(defn get-room-names [url]
+  (let [rooms (get-room-list url)
+        body (:body rooms)
+        body-json (parse-string body)
+        node (get body-json "node")
+        name (get node "key")
+        children (get node "nodes")
+        sorted-children (sort-by get-numeric-message-id children)]
+    (for [child sorted-children] (get-last-piece-of-key child))))
 
 (defn- show-output [resp]
   (println (:body resp)))
 
-(def joey (construct-url joey-ip etcd-port))
-;; (def carl (construct-url carl-ip etcd-port))
 
-(get-room-list joey)
-(get-room joey "room1")
+;(def joey-ip "192.168.219.144")
+;(def etcd-port "4001")
+;(def joey (construct-url joey-ip etcd-port))
 
-;;
-(create-room joey "Test1" "Testing")
-(show-room-info (get-room joey "Test1"))
-(post-message joey "Test1" "First Post!")
-(post-message joey "Test1" "Second Post!")
-(show-messages (get-messages-for-room joey "Test1"))
-
-(create-room joey "Test3" "Foo bar bar")
-
-(delete-room joey "Test1")
-
+;(get-room-list joey)
+;(get-room joey "room1")
+;
+;;;
+;(create-room joey "Test1" "Testing")
+;(show-room-info (get-room joey "Test1"))
+;(post-message joey "Test1" "First Post!")
+;(post-message joey "Test1" "Second Post!")
+;(show-messages (get-messages-for-room joey "Test1"))
+;
+;(create-room joey "Test3" "Foo bar bar")
+;
+;(delete-room joey "Test1")
+;
