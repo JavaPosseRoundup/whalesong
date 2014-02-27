@@ -1,0 +1,18 @@
+NODE=192.168.0.21:4002
+ROOMS=http://${NODE}/v2/keys/whalesong/rooms
+
+curl -L -X PUT ${ROOMS}/room1/name -d value="Java%20Posse%20House"
+
+curl -L -X PUT ${ROOMS}/room1/caption -d value="Where%20the%20elite%20meet"
+
+curl -L -X POST ${ROOMS}/room1/messages -d value="Carl%20says%20hi"
+
+curl -L -X POST ${ROOMS}/room1/messages -d value="Rob%20says%20hi%20back"
+
+curl -L -X PUT ${ROOMS}/room2/name -d value="Crested%20Butte%20Food"
+
+curl -L -X PUT ${ROOMS}/room2/caption -d value="Talk%20About%20CB%20Food"
+
+curl -L -X POST ${ROOMS}/room2/messages -d value="Teocali%20is%20yummy"
+
+curl -L -X POST ${ROOMS}/room2/messages -d value="Fig%20pizza%20is%20best"
