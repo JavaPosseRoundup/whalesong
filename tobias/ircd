@@ -1,0 +1,11 @@
+#!/bin/sh
+
+IMAGE=$(docker build . | tail -n 2 | cut -b26-)
+if [ -z "$ETCD" ]; then
+  echo \'docker run -p 6667:6667 -t -i $IMAGE\'
+  docker run -p 6667:6667 -t -i $IMAGE
+else
+  echo \'docker run -p 6667:6667 --env ETCD="$ETCD" -t -i $IMAGE\'
+  docker run -p 6667:6667 --env ETCD="$ETCD" -t -i $IMAGE
+fi
+
