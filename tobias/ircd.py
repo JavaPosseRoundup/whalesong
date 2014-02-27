@@ -57,15 +57,23 @@ class Etcd(object):
         return DELTE.request(self._key(key))
     def _write(self, sender, topic, message):
         "PRIVMSG sent to 'etcd' - diagnostics..."
-        verb, more = message.split(' ', 1)
+        verb = 'GET'
+        more = message.split(' ', 1)
+        if len(more) > 1:
+            verb, more = more
+        else:
+            more = more[0]
         action = VERBS.get(verb)
         if action is None:
             return ['PRIVMSG etcd :Bad verb: ' + verb]
         more = more.split(' ', 1)
+        path = more[0]
+        if path.startswith('/'): path = path[1:]
+        path = os.path.join(self._server,path)
         if len(more) > 1:
-            response = action.request(more[0], data=more[1])
+            response = action.request(path, data=more[1])
         else:
-            response = action.request(more[0])
+            response = action.request(path)
         return [':etcd PRIVMSG %s :%s' % (sender, json.dumps(response))]
 
 class Disconnect(Exception): pass
@@ -256,7 +264,7 @@ def irc_server(host=os.environ.get("HOST", "0.0.0.0"),
     etcd.mkdir("/whalesong")
     etcd.mkdir("/whalesong/rooms")
     handler = Handler(IRC, etcd=etcd)
-    handler.clients = {'ectd':etcd}
+    handler.clients = {'etcd':etcd}
     handler.rooms = {}
     for room in etcd.get("/whalesong/rooms")['node'].get('nodes',[]):
         name = room['key'].split('/')[-1]
