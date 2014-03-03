@@ -136,7 +136,7 @@
   (println (:body resp)))
 
 
-;(def joey-ip "192.168.219.144")
+;(def joey-ip "192.168.219.147")
 ;(def etcd-port "4001")
 ;(def joey (construct-url joey-ip etcd-port))
 

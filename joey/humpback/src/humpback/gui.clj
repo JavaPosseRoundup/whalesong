@@ -10,7 +10,7 @@
 ;;      pack!
 ;;      show!)))
 
-(def etcd-ip "192.168.219.144")
+(def etcd-ip "192.168.219.147")
 (def etcd-port "4001")
 (def etcd (construct-url etcd-ip etcd-port))
 
