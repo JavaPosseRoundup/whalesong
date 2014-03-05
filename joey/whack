@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker ps -a|sed '1d'|cut -d ' ' -f 1|xargs docker rm
+

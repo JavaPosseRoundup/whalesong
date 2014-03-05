@@ -1,5 +1,7 @@
 #!/bin/bash
 
-# docker run -d -p 4001:4001 -p 7001:7001 coreos/etcd
-docker run -d -p 4001:4001 -p 7001:7001 coreos/etcd
+rm cid
+# CID=$(docker run -d -p 4001:4001 -p 7001:7001 coreos/etcd)
+CID=$(docker run -d -p 4001:4001 --cidfile=cid coreos/etcd)
+docker logs -f $CID
 

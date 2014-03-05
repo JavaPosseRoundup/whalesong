@@ -1,7 +1,15 @@
 #!/bin/bash
 
 CID=$(docker ps | grep etcd | cut -d ' ' -f 1)
-echo Stopping $CID
 
-docker stop $CID
+if [ "$1" = "-k" ]; then
+	CMD=kill
+	MSG="Killing"
+else
+	CMD=stop
+	MSG="Stopping"
+fi
+
+echo $MSG $CID
+docker $CMD $CID
 

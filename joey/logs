@@ -1,0 +1,6 @@
+#!/bin/bash
+
+CID=$(docker ps | grep etcd | cut -d ' ' -f 1)
+
+docker logs -f $CID
+
